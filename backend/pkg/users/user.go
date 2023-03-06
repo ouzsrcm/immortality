@@ -11,6 +11,11 @@ func SetupModule() {
 
 	MigrateDatabase(dst...)
 
+	SeedingDatabase()
+}
+
+func SeedingDatabase() {
+
 	db, err := database.Connect()
 	if err != nil {
 		panic(err)
@@ -19,8 +24,6 @@ func SetupModule() {
 
 	SeedUser(db)
 
-	// seed data
-	// TODO: other operations
 }
 
 func GetInterfaces() []interface{} {
