@@ -1,0 +1,19 @@
+{
+    "Env": {
+        "PRODUCTION": false,
+        "BASEURL": "app api url"
+    },
+    "DatabaseConfig": {
+        "Name": "",
+        "Host": "",
+        "Username": "",
+        "Password": ""
+    },
+    "NameValues": [
+        {
+            "ID": "1",
+            "Name": "temp",
+            "Value": "1"
+        }
+    ]
+}
