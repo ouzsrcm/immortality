@@ -1,14 +1,9 @@
 package main
 
-import (
-	"fmt"
-	"immortality/util"
-)
+import "immortality/pkg/initializer"
 
 func main() {
-	// TODO: initialize app
 
-	fmt.Println("Hello, World!")
-	fmt.Println(util.GetUUID())
+	initializer.Initialize()
 
 }
