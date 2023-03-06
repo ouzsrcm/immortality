@@ -8,10 +8,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Email     string `json:"email"`
-	Gsm       string `json:"gsm"`
-	FirstName string `json:"firstName"`
-	LastName  string `json:"lastName"`
+	Email         string     `json:"email"`
+	Gsm           string     `json:"gsm"`
+	FirstName     string     `json:"firstName"`
+	LastName      string     `json:"lastName"`
+	LastLoginDate *time.Time `json:"lastLoginDate"`
 }
 
 type Credential struct {

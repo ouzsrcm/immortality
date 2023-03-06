@@ -11,6 +11,14 @@ func SetupModule() {
 
 	MigrateDatabase(dst...)
 
+	db, err := database.Connect()
+	if err != nil {
+		panic(err)
+	}
+	fmt.Println("Seeding users...")
+
+	SeedUser(db)
+
 	// seed data
 	// TODO: other operations
 }
@@ -25,5 +33,6 @@ func MigrateDatabase(dst ...interface{}) error {
 		dst = append(dst, GetInterfaces()...)
 	}
 	fmt.Println("Migrating database... ")
-	return database.Migrate(dst...)
+	res := database.Migrate(dst...)
+	return res
 }

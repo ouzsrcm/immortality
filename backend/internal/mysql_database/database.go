@@ -1,8 +1,6 @@
 package mysql_database
 
 import (
-	"fmt"
-
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -13,7 +11,6 @@ func Connect() (*gorm.DB, error) {
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Connected to database... ")
 	return db, nil
 }
 
