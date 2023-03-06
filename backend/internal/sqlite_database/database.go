@@ -1,12 +1,18 @@
 package sqlite_database
 
 import (
+	"os"
+
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
 )
 
 func Connect() (*gorm.DB, error) {
-	db, err := gorm.Open(sqlite.Open("test.db"), &gorm.Config{})
+
+	// Enable CGO for sqlite
+	os.Setenv("CGO_ENABLED", "1")
+
+	db, err := gorm.Open(sqlite.Open("gorm.db"), &gorm.Config{})
 	return db, err
 }
 

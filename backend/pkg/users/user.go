@@ -1,10 +1,15 @@
 package users
 
-import "immortality/pkg/database"
+import (
+	"fmt"
+	"immortality/pkg/database"
+)
 
 func SetupModule() {
 
-	MigrateDatabase()
+	dst := GetInterfaces()
+
+	MigrateDatabase(dst...)
 
 	// seed data
 	// TODO: other operations
@@ -19,5 +24,6 @@ func MigrateDatabase(dst ...interface{}) error {
 	if dst != nil {
 		dst = append(dst, GetInterfaces()...)
 	}
+	fmt.Println("Migrating database... ")
 	return database.Migrate(dst...)
 }
