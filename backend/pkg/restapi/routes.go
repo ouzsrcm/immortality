@@ -8,5 +8,5 @@ import (
 
 func Routes(r *mux.Router) {
 	r.HandleFunc("/users", controllers.Index).Methods("GET")
-	r.HandleFunc("/users/auth", controllers.Auth).Methods("POST")
+	r.HandleFunc("/auth", controllers.Auth).Methods("POST")
 }

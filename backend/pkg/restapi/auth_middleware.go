@@ -20,6 +20,12 @@ func (m *AuthMiddleWare) Init() {
 
 func (m *AuthMiddleWare) Middleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		if r.URL.Path == "/auth" || r.URL.Path == "/register" {
+			next.ServeHTTP(w, r)
+			return
+		}
+
 		token := r.Header.Get("Authorization")
 		if token == "" {
 			w.WriteHeader(http.StatusUnauthorized)
