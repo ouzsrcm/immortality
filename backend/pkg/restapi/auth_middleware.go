@@ -1,8 +1,11 @@
 package restapi
 
 import (
+	"fmt"
+	"immortality/pkg/common"
 	"immortality/pkg/users"
 	"net/http"
+	"strings"
 )
 
 type AuthMiddleWare struct {
@@ -19,9 +22,22 @@ func (m *AuthMiddleWare) Init() {
 }
 
 func (m *AuthMiddleWare) Middleware(next http.Handler) http.Handler {
+
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 
-		if r.URL.Path == "/auth" || r.URL.Path == "/register" {
+		fmt.Println("AuthMiddleWare: ", r.URL.Path)
+
+		if common.Contains(common.Extensions(), r.URL.Path) {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if strings.Contains(r.URL.Path, "auth") {
+			next.ServeHTTP(w, r)
+			return
+		}
+
+		if strings.Contains(r.URL.Path, "swagger") {
 			next.ServeHTTP(w, r)
 			return
 		}

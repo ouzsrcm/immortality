@@ -1,0 +1,45 @@
+info:
+  contact: {}
+paths:
+  /auth:
+    post:
+      consumes:
+      - application/json
+      description: auth for token
+      parameters:
+      - description: Username
+        in: formData
+        name: username
+        required: true
+        type: string
+      - description: Password
+        in: formData
+        name: password
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "true"
+          schema:
+            type: boolean
+      summary: auth for token
+      tags:
+      - users
+  /users:
+    get:
+      consumes:
+      - application/json
+      description: Get all users
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "true"
+          schema:
+            type: boolean
+      summary: Get all users
+      tags:
+      - users
+swagger: "2.0"
