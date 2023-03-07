@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"time"
 
 	"immortality/pkg/common"
 
@@ -82,6 +83,21 @@ func (s *UserStore) GetUser(id uint) (*User, error) {
 	return user, nil
 }
 
+func (s *UserStore) GetUserByEmail(email string) (*User, error) {
+	var user *User
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("email = ?", email).Table(USERS).First(&user)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return errors.New("User not found")
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return user, nil
+}
+
 func (s *UserStore) UserIfExistsByEmail(email string) (bool, error) {
 	var user *User
 	txres := s.Db.Transaction(func(tx *gorm.DB) error {
@@ -141,4 +157,25 @@ func (s *UserStore) GetUsers() ([]User, error) {
 		return nil, txres
 	}
 	return users, nil
+}
+
+func (s *UserStore) GenerateToken(model *User) (bool, error) {
+	token := common.GenerateToken()
+	tokenModel := &UserToken{
+		Token:          token,
+		UserId:         model.ID,
+		ExpirationDate: time.Now().Add(time.Hour * 24 * 7),
+		IsActive:       true,
+	}
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Create(&tokenModel)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return false, txres
+	}
+	return true, nil
 }

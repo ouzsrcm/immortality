@@ -35,6 +35,15 @@ type CredentialChange struct {
 	IsChanged    bool       `json:"isChanged"`
 }
 
+type UserToken struct {
+	gorm.Model
+
+	UserId         uint      `json:"userId"`
+	Token          string    `json:"token"`
+	ExpirationDate time.Time `json:"expirationDate"`
+	IsActive       bool      `json:"isActive"`
+}
+
 func SeedUser(db *gorm.DB) error {
 
 	db.Transaction(func(tx *gorm.DB) error {

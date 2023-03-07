@@ -18,3 +18,29 @@ func Index(w http.ResponseWriter, r *http.Request) {
 	w.Write([]byte(json))
 
 }
+
+func Auth(w http.ResponseWriter, r *http.Request) {
+
+	userStore := users.UserStore{}
+	userStore.Connect()
+
+	username := r.FormValue("username")
+	password := r.FormValue("password")
+
+	res, _ := userStore.VerifyCredential(username, password)
+	user, _ := userStore.GetUserByEmail(username)
+
+	w.Header().Set("Content-Type", "application/json")
+	if res {
+		tokenres, _ := userStore.GenerateToken(user)
+		if tokenres {
+			w.WriteHeader(http.StatusOK)
+		} else {
+			w.WriteHeader(http.StatusInternalServerError)
+		}
+	} else {
+		w.WriteHeader(http.StatusUnauthorized)
+	}
+	json, _ := json.Marshal(res)
+	w.Write([]byte(json))
+}

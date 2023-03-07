@@ -28,7 +28,7 @@ func SeedingDatabase() {
 
 func GetInterfaces() []interface{} {
 	models := make([]interface{}, 0)
-	return append(models, &User{}, &Credential{}, &CredentialChange{})
+	return append(models, &User{}, &Credential{}, &CredentialChange{}, &UserToken{})
 }
 
 func MigrateDatabase(dst ...interface{}) error {
