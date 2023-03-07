@@ -6,7 +6,7 @@ import (
 	"net/http"
 )
 
-func Index(w http.ResponseWriter, r *http.Request) {
+func Index(w http.ResponseWriter, _ *http.Request) {
 
 	userStore := users.UserStore{}
 	userStore.Connect()
