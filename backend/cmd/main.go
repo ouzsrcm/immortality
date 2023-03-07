@@ -1,34 +1,29 @@
 package main
 
-import (
-	"fmt"
-	"immortality/pkg/initializer"
-	"immortality/pkg/users"
-)
-
 func main() {
-	initializer.Initialize()
 
-	userstore := users.UserStore{}
+	// initializer.Initialize()
 
-	userstore.Connect()
+	// userstore := users.UserStore{}
 
-	user, err := userstore.GetUser(1)
-	if err != nil {
-		panic(err)
-	}
+	// userstore.Connect()
 
-	fmt.Println("User: ", user)
+	// user, err := userstore.GetUser(1)
+	// if err != nil {
+	// 	panic(err)
+	// }
 
-	ifexists, err := userstore.UserIfExistsByEmail("oguzhan.saricam@gmail.com")
-	if err != nil {
-		panic(err)
-	}
+	// fmt.Println("User: ", user)
 
-	if ifexists {
-		fmt.Println("User exists")
-	} else {
-		fmt.Println("User does not exist")
-	}
+	// ifexists, err := userstore.UserIfExistsByEmail("oguzhan.saricam@gmail.com")
+	// if err != nil {
+	// 	panic(err)
+	// }
+
+	// if ifexists {
+	// 	fmt.Println("User exists")
+	// } else {
+	// 	fmt.Println("User does not exist")
+	// }
 
 }

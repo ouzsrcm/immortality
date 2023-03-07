@@ -2,13 +2,18 @@ package users
 
 import (
 	"errors"
-	"immortality/pkg/database"
+
+	"immortality/pkg/common"
 
 	"gorm.io/gorm"
 )
 
+const USERS = "users"
+const CREDENTIALS = "credentials"
+const CREDENTIALCHANGES = "credentialchanges"
+
 type UserStore struct {
-	db *gorm.DB
+	common.StoreBase
 }
 
 type IUserStore interface {
@@ -24,6 +29,7 @@ type IUserStore interface {
 	UserIfExistsByGsm(gsm string) (bool, error)
 
 	// Credentials methods
+	VerifyCredential(email string, password string) (*User, error)
 	GetCredentials(id uint) (*Credential, error)
 	GetCredentialsByUsername(username string) (*Credential, error)
 	GetCredentialsByUserId(userId string) (*Credential, error)
@@ -32,48 +38,92 @@ type IUserStore interface {
 	DeleteCredentials(id string) error
 }
 
-func (s *UserStore) Connect() (*gorm.DB, error) {
-	db, err := database.Connect()
-	if err != nil {
-		return nil, err
+func (s *UserStore) VerifyCredential(email string, password string) (bool, error) {
+
+	var user *User
+	var res *gorm.DB
+
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+
+		res = tx.Where("email = ?", email).Table(USERS).First(&user)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return errors.New("user not found")
+		}
+		var credentials *Credential
+		res = tx.Where("user_id = ?", user.ID).Table(CREDENTIALS).First(&credentials)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return errors.New("credentials not found")
+		}
+		if credentials.Password != password {
+			return errors.New("wrong password")
+		}
+		return nil
+	})
+	if txres != nil {
+		return false, txres
 	}
-	s.db = db
-	return db, nil
+	return true, nil
 }
 
 func (s *UserStore) GetUser(id uint) (*User, error) {
-	res := s.db.First(&User{}, id)
-	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-		return nil, errors.New("User not found")
-	}
 	var user *User
-	res.First(&user)
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+
+		res := tx.First(&User{}, id).Table(USERS)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return errors.New("User not found")
+		}
+		res.First(&user)
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
 	return user, nil
 }
 
 func (s *UserStore) UserIfExistsByEmail(email string) (bool, error) {
 	var user *User
-	res := s.db.Where("email = ?", email).First(&user)
-	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-		return false, nil
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("email = ?", email).Table(USERS).First(&user)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return errors.New("user not found")
+		}
+		return nil
+	})
+	if txres != nil {
+		return false, txres
 	}
 	return true, nil
 }
 
 func (s *UserStore) UserIfExistsByGsm(gsm string) (bool, error) {
 	var user *User
-	res := s.db.Where("gsm = ?", gsm).First(&user)
-	if errors.Is(res.Error, gorm.ErrRecordNotFound) {
-		return false, nil
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("gsm = ?", gsm).Table(USERS).First(&user)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return errors.New("user not found")
+		}
+		return nil
+	})
+	if txres != nil {
+		return false, txres
 	}
 	return true, nil
 }
 
 func (s *UserStore) CreateUser(model *User) (*User, error) {
-	res := s.db.Create(&model)
-	if res.Error != nil {
-		return nil, res.Error
+	var user *User
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Create(&model)
+		if res.Error != nil {
+			return res.Error
+		}
+		user, _ = s.GetUser(model.ID)
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
 	}
-	user, _ := s.GetUser(model.ID)
 	return user, nil
 }
