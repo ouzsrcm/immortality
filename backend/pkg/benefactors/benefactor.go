@@ -1,7 +1,6 @@
-package users
+package benefactors
 
 import (
-	"fmt"
 	"immortality/pkg/database"
 )
 
@@ -11,24 +10,11 @@ func Setup() {
 
 	MigrateDatabase(dst...)
 
-	// SeedingDatabase()
-}
-
-func SeedingDatabase() {
-
-	db, err := database.Connect()
-	if err != nil {
-		panic(err)
-	}
-	fmt.Println("Seeding users...")
-
-	SeedUser(db)
-
 }
 
 func GetInterfaces() []interface{} {
 	models := make([]interface{}, 0)
-	return append(models, &User{}, &Credential{}, &CredentialChange{})
+	return append(models, &Benefactor{}, &BenefactorAddress{}, &Company{}, &BenefactorCreditCard{}, &BenefactorBankAccount{})
 }
 
 func MigrateDatabase(dst ...interface{}) error {

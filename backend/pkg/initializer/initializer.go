@@ -1,10 +1,15 @@
 package initializer
 
-import "immortality/pkg/users"
+import (
+	"immortality/pkg/benefactors"
+	"immortality/pkg/users"
+)
 
 func Initialize() {
 
-	users.SetupModule()
+	users.Setup()
+
+	benefactors.Setup()
 
 	// TODO: setup other modules
 
