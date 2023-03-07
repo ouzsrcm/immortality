@@ -37,6 +37,8 @@ type IUserStore interface {
 	CreateCredentials(credentials *Credential) error
 	UpdateCredentials(credentials *Credential) error
 	DeleteCredentials(id string) error
+
+	GetTokens() ([]*UserToken, error)
 }
 
 func (s *UserStore) VerifyCredential(email string, password string) (bool, error) {
@@ -178,4 +180,19 @@ func (s *UserStore) GenerateToken(model *User) (bool, error) {
 		return false, txres
 	}
 	return true, nil
+}
+
+func (s *UserStore) GetTokens() ([]*UserToken, error) {
+	var tokens []*UserToken
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Table("user_tokens").Find(&tokens)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return tokens, nil
 }

@@ -12,6 +12,10 @@ func Initialize() {
 
 	r := mux.NewRouter()
 
+	amw := AuthMiddleWare{}
+	amw.Init()
+	r.Use(amw.Middleware)
+
 	Routes(r)
 
 	// TODO: routes
