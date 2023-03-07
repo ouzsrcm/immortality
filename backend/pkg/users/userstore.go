@@ -127,3 +127,18 @@ func (s *UserStore) CreateUser(model *User) (*User, error) {
 	}
 	return user, nil
 }
+
+func (s *UserStore) GetUsers() ([]User, error) {
+	var users []User
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Find(&users)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return users, nil
+}
