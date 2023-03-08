@@ -21,6 +21,7 @@ func Routes(r *mux.Router) {
 
 	authRoute := r.PathPrefix("/auth").Subrouter()
 	authRoute.HandleFunc("", restapi.Auth).Methods("POST")
+	authRoute.HandleFunc("/expire_token", restapi.ExpireToken).Methods("POST")
 
 	r.PathPrefix("/swagger").Handler(httpSwagger.WrapHandler)
 }

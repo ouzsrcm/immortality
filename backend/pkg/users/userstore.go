@@ -188,7 +188,7 @@ func (s *UserStore) GenerateToken(model *User) (*UserToken, error) {
 func (s *UserStore) GetTokens() ([]*UserToken, error) {
 	var tokens []*UserToken
 	txres := s.Db.Transaction(func(tx *gorm.DB) error {
-		res := tx.Table("user_tokens").Find(&tokens)
+		res := tx.Table("user_tokens").Where("is_active = ?", 1).Find(&tokens)
 		if res.Error != nil {
 			return res.Error
 		}
@@ -198,4 +198,45 @@ func (s *UserStore) GetTokens() ([]*UserToken, error) {
 		return nil, txres
 	}
 	return tokens, nil
+}
+
+func (s *UserStore) UpdateToken(token string) (*UserToken, error) {
+	var tokenModel *UserToken
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("token = ?", token).Table("user_tokens").First(&tokenModel)
+		if res.Error != nil {
+			return res.Error
+		}
+		tokenModel.ExpirationDate = time.Now().Add(time.Hour * 24 * 7)
+		res = tx.Save(&tokenModel)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return tokenModel, nil
+}
+
+func (s *UserStore) ExpireToken(token string) (*UserToken, error) {
+	var tokenModel *UserToken
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("token = ?", token).Table("user_tokens").First(&tokenModel)
+		if res.Error != nil {
+			return res.Error
+		}
+		tokenModel.ExpirationDate = time.Now()
+		tokenModel.IsActive = false
+		res = tx.Save(&tokenModel)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return tokenModel, nil
 }

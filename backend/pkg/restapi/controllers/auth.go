@@ -19,6 +19,17 @@ type AuthResponse struct {
 	ErrorMessage string `json:"error_message"`
 }
 
+type ExpireTokenRequest struct {
+	Token string `json:"token"`
+}
+
+type ExpireTokenResponse struct {
+	UserId       uint   `json:"user_id"`
+	Token        string `json:"token"`
+	StatusCode   int    `json:"status_code"`
+	ErrorMessage string `json:"error_message"`
+}
+
 // / Register godoc
 // @Summary auth for token
 // @Description auth for token
@@ -67,4 +78,42 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 	})
 
 	w.Write([]byte(json))
+}
+
+// / ExpireToken godoc
+// @Summary expire token
+// @Description expire token
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body ExpireTokenRequest true "request"
+// @Success 200 {object} ExpireTokenResponse "true"
+// @Failure 401 {object} ExpireTokenResponse "false"
+// @Failure 404 {object} ExpireTokenResponse "false"
+// @Failure 500 {object} ExpireTokenResponse "false"
+// @Router /auth/expire_token [post]
+func ExpireToken(w http.ResponseWriter, r *http.Request) {
+	var model ExpireTokenRequest
+	decoder := json.NewDecoder(r.Body)
+	decoder.Decode(&model)
+
+	userStore := users.UserStore{}
+	userStore.Connect()
+
+	w.Header().Set("Content-Type", "application/json")
+
+	res, err := userStore.ExpireToken(model.Token)
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+	}
+	json, _ := json.Marshal(ExpireTokenResponse{
+		UserId:       res.UserId,
+		Token:        res.Token,
+		StatusCode:   http.StatusOK,
+		ErrorMessage: "",
+	})
+
+	w.Write([]byte(json))
+
 }

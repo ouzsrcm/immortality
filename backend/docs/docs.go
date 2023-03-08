@@ -67,6 +67,58 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/expire_token": {
+            "post": {
+                "description": "expire token",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "expire token",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireTokenRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "true",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireTokenResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireTokenResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireTokenResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireTokenResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/users": {
             "get": {
                 "description": "Get all users",
@@ -109,6 +161,31 @@ const docTemplate = `{
                 "email": {
                     "type": "string"
                 },
+                "error_message": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "restapi.ExpireTokenRequest": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "restapi.ExpireTokenResponse": {
+            "type": "object",
+            "properties": {
                 "error_message": {
                     "type": "string"
                 },

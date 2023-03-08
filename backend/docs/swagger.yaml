@@ -19,6 +19,22 @@ definitions:
       user_id:
         type: integer
     type: object
+  restapi.ExpireTokenRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  restapi.ExpireTokenResponse:
+    properties:
+      error_message:
+        type: string
+      status_code:
+        type: integer
+      token:
+        type: string
+      user_id:
+        type: integer
+    type: object
   restapi.UserListResponse:
     properties:
       email:
@@ -72,6 +88,40 @@ paths:
           schema:
             $ref: '#/definitions/restapi.AuthResponse'
       summary: auth for token
+      tags:
+      - auth
+  /auth/expire_token:
+    post:
+      consumes:
+      - application/json
+      description: expire token
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/restapi.ExpireTokenRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "true"
+          schema:
+            $ref: '#/definitions/restapi.ExpireTokenResponse'
+        "401":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.ExpireTokenResponse'
+        "404":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.ExpireTokenResponse'
+        "500":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.ExpireTokenResponse'
+      summary: expire token
       tags:
       - auth
   /users:

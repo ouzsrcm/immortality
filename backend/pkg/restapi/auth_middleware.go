@@ -3,7 +3,6 @@ package restapi
 import (
 	"fmt"
 	"immortality/pkg/common"
-	"immortality/pkg/users"
 	"net/http"
 	"strings"
 )
@@ -13,12 +12,12 @@ type AuthMiddleWare struct {
 }
 
 func (m *AuthMiddleWare) Init() {
-	userStore := users.UserStore{}
-	userStore.Connect()
-	tokens, _ := userStore.GetTokens()
-	for _, token := range tokens {
-		m.tokens[token.Token] = token.ID
-	}
+	// userStore := users.UserStore{}
+	// userStore.Connect()
+	// tokens, _ := userStore.GetTokens()
+	// for _, token := range tokens {
+	// 	m.tokens[token.Token] = token.ID
+	// }
 }
 
 func (m *AuthMiddleWare) Middleware(next http.Handler) http.Handler {
