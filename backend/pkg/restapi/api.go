@@ -18,8 +18,6 @@ func Initialize() {
 
 	Routes(r)
 
-	// TODO: routes
-
 	// port'u config'e taşı
 	http.ListenAndServe(":8080", r)
 
