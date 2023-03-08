@@ -2,6 +2,7 @@ package initializer
 
 import (
 	"immortality/pkg/benefactors"
+	"immortality/pkg/donation"
 	"immortality/pkg/users"
 )
 
@@ -11,6 +12,6 @@ func Initialize() {
 
 	benefactors.Setup()
 
-	// TODO: setup other modules
+	donation.Setup()
 
 }
