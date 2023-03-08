@@ -164,7 +164,7 @@ func (s *UserStore) GetUsers() ([]User, error) {
 	return users, nil
 }
 
-func (s *UserStore) GenerateToken(model *User) (bool, error) {
+func (s *UserStore) GenerateToken(model *User) (*UserToken, error) {
 	token := common.GenerateToken()
 	tokenModel := &UserToken{
 		Token:          token,
@@ -180,9 +180,9 @@ func (s *UserStore) GenerateToken(model *User) (bool, error) {
 		return nil
 	})
 	if txres != nil {
-		return false, txres
+		return nil, txres
 	}
-	return true, nil
+	return tokenModel, nil
 }
 
 func (s *UserStore) GetTokens() ([]*UserToken, error) {

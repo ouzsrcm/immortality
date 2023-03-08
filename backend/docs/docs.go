@@ -35,7 +35,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/restapi.AuthDto"
+                            "$ref": "#/definitions/restapi.AuthRequest"
                         }
                     }
                 ],
@@ -43,7 +43,25 @@ const docTemplate = `{
                     "200": {
                         "description": "true",
                         "schema": {
-                            "type": "boolean"
+                            "$ref": "#/definitions/restapi.AuthResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.AuthResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.AuthResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.AuthResponse"
                         }
                     }
                 }
@@ -64,9 +82,9 @@ const docTemplate = `{
                 "summary": "Get all users",
                 "responses": {
                     "200": {
-                        "description": "true",
+                        "description": "OK",
                         "schema": {
-                            "type": "boolean"
+                            "$ref": "#/definitions/restapi.UserListResponse"
                         }
                     }
                 }
@@ -74,7 +92,7 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "restapi.AuthDto": {
+        "restapi.AuthRequest": {
             "type": "object",
             "properties": {
                 "email": {
@@ -82,6 +100,51 @@ const docTemplate = `{
                 },
                 "password": {
                     "type": "string"
+                }
+            }
+        },
+        "restapi.AuthResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string"
+                },
+                "error_message": {
+                    "type": "string"
+                },
+                "status_code": {
+                    "type": "integer"
+                },
+                "token": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "restapi.UserListResponse": {
+            "type": "object",
+            "properties": {
+                "email": {
+                    "type": "string",
+                    "example": "john.doe@gmail.com"
+                },
+                "firstName": {
+                    "type": "string",
+                    "example": "John"
+                },
+                "gsm": {
+                    "type": "string",
+                    "example": "555-555-5555"
+                },
+                "lastLoginDate": {
+                    "type": "string",
+                    "example": "2021-01-01T00:00:00Z"
+                },
+                "lastName": {
+                    "type": "string",
+                    "example": "Doe"
                 }
             }
         }

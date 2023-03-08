@@ -1,9 +1,40 @@
 definitions:
-  restapi.AuthDto:
+  restapi.AuthRequest:
     properties:
       email:
         type: string
       password:
+        type: string
+    type: object
+  restapi.AuthResponse:
+    properties:
+      email:
+        type: string
+      error_message:
+        type: string
+      status_code:
+        type: integer
+      token:
+        type: string
+      user_id:
+        type: integer
+    type: object
+  restapi.UserListResponse:
+    properties:
+      email:
+        example: john.doe@gmail.com
+        type: string
+      firstName:
+        example: John
+        type: string
+      gsm:
+        example: 555-555-5555
+        type: string
+      lastLoginDate:
+        example: "2021-01-01T00:00:00Z"
+        type: string
+      lastName:
+        example: Doe
         type: string
     type: object
 info:
@@ -20,14 +51,26 @@ paths:
         name: request
         required: true
         schema:
-          $ref: '#/definitions/restapi.AuthDto'
+          $ref: '#/definitions/restapi.AuthRequest'
       produces:
       - application/json
       responses:
         "200":
           description: "true"
           schema:
-            type: boolean
+            $ref: '#/definitions/restapi.AuthResponse'
+        "401":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.AuthResponse'
+        "404":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.AuthResponse'
+        "500":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.AuthResponse'
       summary: auth for token
       tags:
       - auth
@@ -40,9 +83,9 @@ paths:
       - application/json
       responses:
         "200":
-          description: "true"
+          description: OK
           schema:
-            type: boolean
+            $ref: '#/definitions/restapi.UserListResponse'
       summary: Get all users
       tags:
       - users
