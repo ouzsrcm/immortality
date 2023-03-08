@@ -138,6 +138,18 @@ const docTemplate = `{
                         "schema": {
                             "$ref": "#/definitions/restapi.UserListResponse"
                         }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.UserListResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.UserListResponse"
+                        }
                     }
                 }
             }

@@ -136,6 +136,14 @@ paths:
           description: OK
           schema:
             $ref: '#/definitions/restapi.UserListResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/restapi.UserListResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/restapi.UserListResponse'
       summary: Get all users
       tags:
       - users

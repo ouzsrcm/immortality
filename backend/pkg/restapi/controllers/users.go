@@ -22,8 +22,8 @@ type UserListResponse struct {
 // @Accept  json
 // @Produce  json
 // @Success 200 {object} UserListResponse
-// @Failure 400 {object} ErrorResponse
-// @Failure 500 {object} ErrorResponse
+// @Failure 400 {object} UserListResponse
+// @Failure 500 {object} UserListResponse
 // @Router /users [get]
 func UserList(w http.ResponseWriter, _ *http.Request) {
 
