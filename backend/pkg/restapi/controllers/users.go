@@ -1,10 +1,15 @@
-package controllers
+package restapi
 
 import (
 	"encoding/json"
 	"immortality/pkg/users"
 	"net/http"
 )
+
+type AuthDto struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
 
 // / Index godoc
 // @Summary Get all users
@@ -14,7 +19,7 @@ import (
 // @Produce  json
 // @Success 200 {object} bool "true"
 // @Router /users [get]
-func Index(w http.ResponseWriter, _ *http.Request) {
+func UserList(w http.ResponseWriter, _ *http.Request) {
 
 	userStore := users.UserStore{}
 	userStore.Connect()
@@ -30,23 +35,24 @@ func Index(w http.ResponseWriter, _ *http.Request) {
 // / Register godoc
 // @Summary auth for token
 // @Description auth for token
-// @Tags users
+// @Tags auth
 // @Accept  json
 // @Produce  json
-// @Param username formData string true "Username"
-// @Param password formData string true "Password"
+// @Param request body AuthDto true "request"
 // @Success 200 {object} bool "true"
 // @Router /auth [post]
 func Auth(w http.ResponseWriter, r *http.Request) {
 
+	var model AuthDto
+
+	decoder := json.NewDecoder(r.Body)
+	decoder.Decode(&model)
+
 	userStore := users.UserStore{}
 	userStore.Connect()
 
-	email := r.FormValue("email")
-	password := r.FormValue("password")
-
-	res, _ := userStore.VerifyCredential(email, password)
-	user, _ := userStore.GetUserByEmail(email)
+	res, _ := userStore.VerifyCredential(model.Email, model.Password)
+	user, _ := userStore.GetUserByEmail(model.Email)
 
 	w.Header().Set("Content-Type", "application/json")
 	if res {

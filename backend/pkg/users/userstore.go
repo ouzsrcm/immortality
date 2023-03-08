@@ -2,6 +2,7 @@ package users
 
 import (
 	"errors"
+	"fmt"
 	"time"
 
 	"immortality/pkg/common"
@@ -42,6 +43,8 @@ type IUserStore interface {
 }
 
 func (s *UserStore) VerifyCredential(email string, password string) (bool, error) {
+
+	fmt.Println("VerifyCredential: ", email, password)
 
 	var user *User
 	var res *gorm.DB

@@ -1,3 +1,11 @@
+definitions:
+  restapi.AuthDto:
+    properties:
+      email:
+        type: string
+      password:
+        type: string
+    type: object
 info:
   contact: {}
 paths:
@@ -7,16 +15,12 @@ paths:
       - application/json
       description: auth for token
       parameters:
-      - description: Username
-        in: formData
-        name: username
+      - description: request
+        in: body
+        name: request
         required: true
-        type: string
-      - description: Password
-        in: formData
-        name: password
-        required: true
-        type: string
+        schema:
+          $ref: '#/definitions/restapi.AuthDto'
       produces:
       - application/json
       responses:
@@ -26,7 +30,7 @@ paths:
             type: boolean
       summary: auth for token
       tags:
-      - users
+      - auth
   /users:
     get:
       consumes:
