@@ -50,8 +50,7 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&model)
 
-	userStore := users.UserStore{}
-	userStore.Connect()
+	userStore := users.NewUserStore()
 
 	res, _ := userStore.VerifyCredential(model.Email, model.Password)
 	user, _ := userStore.GetUserByEmail(model.Email)
@@ -97,8 +96,7 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 	decoder := json.NewDecoder(r.Body)
 	decoder.Decode(&model)
 
-	userStore := users.UserStore{}
-	userStore.Connect()
+	userStore := users.NewUserStore()
 
 	w.Header().Set("Content-Type", "application/json")
 

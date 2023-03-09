@@ -10,6 +10,12 @@ type DonationStore struct {
 	common.StoreBase
 }
 
+func NewDonationStore() *DonationStore {
+	store := new(DonationStore)
+	store.Connect()
+	return store
+}
+
 type IDonationService interface {
 	GetDonationGroups() ([]DonationGroup, error)
 	GetDonationGroup(id uint) (DonationGroup, error)

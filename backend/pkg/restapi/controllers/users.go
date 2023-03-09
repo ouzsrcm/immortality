@@ -58,8 +58,7 @@ type UserCreateResponse struct {
 // @Router /users [get]
 func UserList(w http.ResponseWriter, _ *http.Request) {
 
-	userStore := users.UserStore{}
-	userStore.Connect()
+	userStore := users.NewUserStore()
 	res, err := userStore.GetUsers()
 
 	var users []UserDto
@@ -140,8 +139,7 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 	user.FirstName = request.FirstName
 	user.LastName = request.LastName
 
-	userStore := users.UserStore{}
-	userStore.Connect()
+	userStore := users.NewUserStore()
 
 	res, err := userStore.CreateUser(&user)
 

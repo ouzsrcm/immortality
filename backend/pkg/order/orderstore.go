@@ -6,6 +6,12 @@ type OrderStore struct {
 	common.StoreBase
 }
 
+func NewOrderStore() *OrderStore {
+	store := new(OrderStore)
+	store.Connect()
+	return store
+}
+
 type IOrderStore interface {
 	GetOrderById(id uint) (*Order, error)
 	GetOrderInfoById(id uint) (*OrderInfo, error)

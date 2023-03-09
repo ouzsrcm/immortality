@@ -18,6 +18,12 @@ type UserStore struct {
 	common.StoreBase
 }
 
+func NewUserStore() *UserStore {
+	store := new(UserStore)
+	store.Connect()
+	return store
+}
+
 type IUserStore interface {
 
 	// User methods
