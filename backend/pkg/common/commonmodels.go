@@ -31,3 +31,9 @@ type CreditCardType struct {
 	Name        string `json:"name" example:"1"` // MasterCard, Visa, American Express, Discover
 	Description string `json:"description" example:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."`
 }
+
+type ApiResponse struct {
+	Status       string      `json:"status"`
+	ErrorMessage string      `json:"errorMessage"`
+	Data         interface{} `json:"data"`
+}

@@ -24,6 +24,7 @@ type IUserStore interface {
 	GetUser(id uint) (*User, error)
 	GetUserByEmail(email string) (*User, error)
 	GetUsers() ([]*User, error)
+
 	CreateUser(user *User) error
 	UpdateUser(user *User) error
 	DeleteUser(id string) error
@@ -32,12 +33,14 @@ type IUserStore interface {
 
 	// Credentials methods
 	VerifyCredential(email string, password string) (*User, error)
-	GetCredentials(id uint) (*Credential, error)
+
+	GetCredential(id uint) (*Credential, error)
 	GetCredentialsByUsername(username string) (*Credential, error)
 	GetCredentialsByUserId(userId string) (*Credential, error)
-	CreateCredentials(credentials *Credential) error
-	UpdateCredentials(credentials *Credential) error
-	DeleteCredentials(id string) error
+
+	CreateCredential(credentials *Credential) error
+	UpdateCredential(credentials *Credential) error
+	DeleteCredential(id string) error
 
 	GetTokens() ([]*UserToken, error)
 }
@@ -239,4 +242,109 @@ func (s *UserStore) ExpireToken(token string) (*UserToken, error) {
 		return nil, txres
 	}
 	return tokenModel, nil
+}
+
+func (s *UserStore) CreateCredential(model *Credential) (*Credential, error) {
+	var credential *Credential
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Create(&model)
+		if res.Error != nil {
+			return res.Error
+		}
+		credential, _ = s.GetCredential(model.ID)
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return credential, nil
+}
+
+func (s *UserStore) GetCredential(id uint) (*Credential, error) {
+	var credential *Credential
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("id = ?", id).Table(CREDENTIALS).First(&credential)
+		if errors.Is(res.Error, gorm.ErrRecordNotFound) {
+			return errors.New("Credential not found")
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return credential, nil
+}
+
+func (s *UserStore) GetCredentials() ([]Credential, error) {
+	var credentials []Credential
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Table(CREDENTIALS).Find(&credentials)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return credentials, nil
+}
+
+func (s *UserStore) GetCredentialsByUserId(userId uint) ([]Credential, error) {
+	var credentials []Credential
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("user_id = ?", userId).Table(CREDENTIALS).Find(&credentials)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return credentials, nil
+}
+
+func (s *UserStore) UpdateCredential(model *Credential) (*Credential, error) {
+	var credential *Credential
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Save(&model)
+		if res.Error != nil {
+			return res.Error
+		}
+		credential, _ = s.GetCredential(model.ID)
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return credential, nil
+}
+
+func (s *UserStore) DeleteCredential(id uint) error {
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("id = ?", id).Table(CREDENTIALS).Delete(&Credential{})
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return txres
+	}
+	return nil
+}
+
+func (s *UserStore) DeleteCredentialsByUserId(userId uint) error {
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("user_id = ?", userId).Table(CREDENTIALS).Delete(&Credential{})
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return txres
+	}
+	return nil
 }

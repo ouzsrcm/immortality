@@ -6,6 +6,11 @@ import (
 	"github.com/google/uuid"
 )
 
+const (
+	ApiStatusSuccess = "success"
+	ApiStatusError   = "error"
+)
+
 func GenerateToken() string {
 	return uuid.New().String()
 }
