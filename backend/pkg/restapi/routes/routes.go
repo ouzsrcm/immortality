@@ -1,4 +1,4 @@
-package restapi
+package routes
 
 import (
 	_ "immortality/docs"

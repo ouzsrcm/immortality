@@ -1,4 +1,4 @@
-package restapi
+package middleware
 
 import (
 	"immortality/pkg/common"
