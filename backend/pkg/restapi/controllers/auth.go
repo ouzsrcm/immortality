@@ -32,13 +32,19 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 
 	userStore := users.NewUserStore()
 
-	res, _ := userStore.VerifyCredential(model.Email, model.Password)
-	user, err := userStore.GetUserByEmail(model.Email)
-
+	res, err := userStore.VerifyCredential(model.Email, model.Password)
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	user, err := userStore.GetUserByEmail(model.Email)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
 		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
@@ -53,7 +59,7 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 	} else {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = "Invalid email or password"
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
 		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
@@ -65,7 +71,7 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 		ErrorMessage: "",
 	})
 	response.Data = json
-	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
 	apibase.ApiResult(w, r, *resultInfo)
 }
 
@@ -93,7 +99,7 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
 		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
@@ -105,6 +111,6 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 	})
 	response.Data = json
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
 	apibase.ApiResult(w, r, *resultInfo)
 }

@@ -46,7 +46,7 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Users = users
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
 	apibase.ApiResult(w, r, *resultInfo)
 }
 
@@ -125,7 +125,7 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		LastName:  res.LastName,
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
 	apibase.ApiResult(w, r, *resultInfo)
 }
 
@@ -168,7 +168,7 @@ func Get(w http.ResponseWriter, r *http.Request) {
 		LastName:  res.LastName,
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
 	apibase.ApiResult(w, r, *resultInfo)
 }
 
@@ -228,7 +228,7 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		LastName:  res.LastName,
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
 	apibase.ApiResult(w, r, *resultInfo)
 }
 
@@ -264,6 +264,6 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
 	apibase.ApiResult(w, r, *resultInfo)
 }

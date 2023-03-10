@@ -8,9 +8,14 @@ definitions:
     type: object
   restapi.AuthResponse:
     properties:
+      data: {}
       email:
         type: string
       error_message:
+        type: string
+      errorMessage:
+        type: string
+      status:
         type: string
       status_code:
         type: integer
@@ -26,7 +31,12 @@ definitions:
     type: object
   restapi.ExpireTokenResponse:
     properties:
+      data: {}
       error_message:
+        type: string
+      errorMessage:
+        type: string
+      status:
         type: string
       status_code:
         type: integer

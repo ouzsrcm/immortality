@@ -351,10 +351,17 @@ const docTemplate = `{
         "restapi.AuthResponse": {
             "type": "object",
             "properties": {
+                "data": {},
                 "email": {
                     "type": "string"
                 },
+                "errorMessage": {
+                    "type": "string"
+                },
                 "error_message": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 },
                 "status_code": {
@@ -379,7 +386,14 @@ const docTemplate = `{
         "restapi.ExpireTokenResponse": {
             "type": "object",
             "properties": {
+                "data": {},
+                "errorMessage": {
+                    "type": "string"
+                },
                 "error_message": {
+                    "type": "string"
+                },
+                "status": {
                     "type": "string"
                 },
                 "status_code": {
