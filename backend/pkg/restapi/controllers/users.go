@@ -10,6 +10,9 @@ import (
 	"time"
 )
 
+// TODO: apibase.NewResultInfo metodu hatalı.
+/// düzeltilmesi gerekiyor.
+
 // / Index godoc
 // @Summary Get all users
 // @Description Get all users
@@ -105,8 +108,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		var resultInfo apibase.ResultInfo
+		resultInfo.ContentType = "application/json"
+		resultInfo.StatusCode = http.StatusBadRequest
+		resultInfo.Data = response
+		apibase.ApiResult(w, r, resultInfo)
 		return
 	}
 

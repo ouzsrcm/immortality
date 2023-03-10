@@ -11,7 +11,7 @@ func Setup() {
 
 	MigrateDatabase(dst...)
 
-	// SeedingDatabase()
+	//SeedingDatabase()
 }
 
 func SeedingDatabase() {

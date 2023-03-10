@@ -2,6 +2,8 @@ package middleware
 
 import (
 	"immortality/pkg/common"
+	"immortality/pkg/users"
+	"log"
 	"net/http"
 	"strings"
 )
@@ -11,12 +13,16 @@ type AuthMiddleWare struct {
 }
 
 func (m *AuthMiddleWare) Init() {
-	// userStore := users.UserStore{}
-	// userStore.Connect()
-	// tokens, _ := userStore.GetTokens()
-	// for _, token := range tokens {
-	// 	m.tokens[token.Token] = token.ID
-	// }
+	log.Print("AuthMiddleWare init")
+
+	userStore := users.NewUserStore()
+	tokens, _ := userStore.GetTokens()
+
+	m.tokens = make(map[string]uint)
+	for _, token := range tokens {
+		m.tokens[token.Token] = token.ID
+	}
+	log.Print("tokens", m.tokens)
 }
 
 func (m *AuthMiddleWare) Middleware(next http.Handler) http.Handler {

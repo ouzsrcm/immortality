@@ -21,13 +21,17 @@ type ResultInfo struct {
 // / @param content_type Content-Type
 // / @param data Veri
 func NewResultInfo(code int, message string, content_type string, data interface{}) *ResultInfo {
-	return &ResultInfo{
-		StatusCode:  code,
-		StatusText:  http.StatusText(code),
-		Message:     message,
-		Data:        data,
-		ContentType: content_type,
-	}
+
+	resultInfo := new(ResultInfo)
+
+	resultInfo.StatusCode = code
+	resultInfo.StatusText = http.StatusText(code)
+	resultInfo.Message = message
+	resultInfo.Data = data
+	resultInfo.ContentType = content_type
+
+	return resultInfo
+
 }
 
 // / HTTP status kodunu ayarlar

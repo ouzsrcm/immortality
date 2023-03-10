@@ -3,7 +3,6 @@ package routes
 import (
 	_ "immortality/docs"
 	restapi "immortality/pkg/restapi/controllers"
-	"net/http"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 
@@ -11,14 +10,6 @@ import (
 )
 
 func Routes(r *mux.Router) {
-
-	r.Methods("OPTIONS").HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Access-Control-Allow-Origin", "*")
-		w.Header().Set("Access-Control-Allow-Methods", "POST, GET, OPTIONS, PUT, DELETE")
-		w.Header().Set("Access-Control-Allow-Headers", "Accept, Content-Type, Content-Length, Accept-Encoding, X-CSRF-Token, Authorization")
-	})
-
-	r.StrictSlash(true).Path("/")
 
 	usersRoute := r.PathPrefix("/users").Subrouter()
 	usersRoute.HandleFunc("", restapi.UserList).Methods("GET")

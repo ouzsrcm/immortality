@@ -71,8 +71,13 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 		ErrorMessage: "",
 	})
 	response.Data = json
-	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
-	apibase.ApiResult(w, r, *resultInfo)
+
+	var resultInfo apibase.ResultInfo
+	resultInfo.ContentType = "application/json"
+	resultInfo.StatusCode = http.StatusOK
+	resultInfo.Data = response
+
+	apibase.ApiResult(w, r, resultInfo)
 }
 
 // / ExpireToken godoc
@@ -111,6 +116,11 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 	})
 	response.Data = json
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
-	apibase.ApiResult(w, r, *resultInfo)
+
+	var resultInfo apibase.ResultInfo
+	resultInfo.ContentType = "application/json"
+	resultInfo.StatusCode = http.StatusOK
+	resultInfo.Data = response
+
+	apibase.ApiResult(w, r, resultInfo)
 }
