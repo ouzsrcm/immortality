@@ -3,6 +3,7 @@ package restapi
 import (
 	"encoding/json"
 	"immortality/pkg/common"
+	"immortality/pkg/restapi/apibase"
 	"immortality/pkg/users"
 	"net/http"
 	"time"
@@ -118,19 +119,13 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 	var request UserCreateRequest
 	var response UserCreateResponse
 
-	w.Header().Set("Content-Type", "application/json")
-
 	err := json.NewDecoder(r.Body).Decode(&request)
 
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		json, _ := json.Marshal(response)
-
-		w.Write([]byte(json))
-
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
 
