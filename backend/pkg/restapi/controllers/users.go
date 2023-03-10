@@ -139,14 +139,10 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 	res, err := userStore.CreateUser(&user)
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		json, _ := json.Marshal(response)
-
-		w.Write([]byte(json))
-
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
 
@@ -158,14 +154,10 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 	creres, err := userStore.CreateCredential(&credential)
 
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		json, _ := json.Marshal(response)
-
-		w.Write([]byte(json))
-
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
 
@@ -183,13 +175,7 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 		FirstName: res.FirstName,
 		LastName:  res.LastName,
 	}
-
 	response.Status = common.ApiStatusSuccess
-	response.ErrorMessage = ""
-
-	w.WriteHeader(http.StatusOK)
-
-	json, _ := json.Marshal(response)
-	w.Write([]byte(json))
-
+	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	apibase.ApiResult(w, r, *resultInfo)
 }

@@ -28,10 +28,16 @@ func NewResultInfo(code int, message string, content_type string, data interface
 	}
 }
 
+// / HTTP status kodunu ayarlar
+// / @param code HTTP status code
 func (s *ResultInfo) SetStatusText(code int) {
 	s.StatusText = http.StatusText(code)
 }
 
+// / Response iletmek için kullanılır
+// / @param w http.ResponseWriter
+// / @param r *http.Request
+// / @param i ResultInfo
 func ApiResult(w http.ResponseWriter, r *http.Request, i ResultInfo) (bool, error) {
 
 	if i.StatusCode >= 400 {
