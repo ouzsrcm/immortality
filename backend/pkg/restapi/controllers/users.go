@@ -5,6 +5,7 @@ import (
 	"immortality/pkg/common"
 	"immortality/pkg/restapi/apibase"
 	"immortality/pkg/users"
+	"immortality/util"
 	"net/http"
 	"time"
 )
@@ -15,6 +16,27 @@ type UserDto struct {
 	Gsm       string `json:"gsm" example:"555-555-5555"`
 	FirstName string `json:"firstName" example:"John"`
 	LastName  string `json:"lastName" example:"Doe"`
+}
+
+type UserResponse struct {
+	common.ApiResponse
+	User UserDto `json:"user"`
+}
+
+type UserUpdateRequest struct {
+	UserDto
+}
+
+type UserUpdateResponse struct {
+	common.ApiResponse
+	User UserDto `json:"user"`
+}
+
+type UserDeleteRequest struct {
+	ID uint `json:"id" example:"1"`
+}
+type UserDeleteResponse struct {
+	common.ApiResponse
 }
 
 type CredentialDto struct {
@@ -57,7 +79,7 @@ type UserCreateResponse struct {
 // @Failure 400 {object} UserListResponse
 // @Failure 500 {object} UserListResponse
 // @Router /users [get]
-func UserList(w http.ResponseWriter, _ *http.Request) {
+func UserList(w http.ResponseWriter, r *http.Request) {
 
 	userStore := users.NewUserStore()
 	res, err := userStore.GetUsers()
@@ -65,21 +87,13 @@ func UserList(w http.ResponseWriter, _ *http.Request) {
 	var users []UserDto
 	var response UserListResponse
 
-	w.Header().Set("Content-Type", "application/json")
-
 	if err != nil {
-
-		w.WriteHeader(http.StatusInternalServerError)
-
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		json, _ := json.Marshal(response)
-
-		w.Write([]byte(json))
-
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
-
 	for _, user := range res {
 		users = append(users, UserDto{
 			ID:        user.ID,
@@ -89,16 +103,10 @@ func UserList(w http.ResponseWriter, _ *http.Request) {
 			LastName:  user.LastName,
 		})
 	}
-
 	response.Users = users
 	response.Status = common.ApiStatusSuccess
-	response.ErrorMessage = ""
-
-	w.WriteHeader(http.StatusOK)
-
-	json, _ := json.Marshal(response)
-	w.Write([]byte(json))
-
+	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	apibase.ApiResult(w, r, *resultInfo)
 }
 
 // / Create godoc
@@ -108,11 +116,11 @@ func UserList(w http.ResponseWriter, _ *http.Request) {
 // @Accept  json
 // @Produce  json
 // @Param user body UserCreateRequest true "User"
-// @Success 200 {object} UserCreateResponse
-// @Failure 400 {object} UserCreateResponse
-// @Failure 500 {object} UserCreateResponse
+// @Success 200 {object} UserResponse
+// @Failure 400 {object} UserResponse
+// @Failure 500 {object} UserResponse
 // @Router /users [post]
-func UserCreate(w http.ResponseWriter, r *http.Request) {
+func Create(w http.ResponseWriter, r *http.Request) {
 
 	var user users.User
 	var credential users.Credential
@@ -174,6 +182,145 @@ func UserCreate(w http.ResponseWriter, r *http.Request) {
 		Gsm:       res.Gsm,
 		FirstName: res.FirstName,
 		LastName:  res.LastName,
+	}
+	response.Status = common.ApiStatusSuccess
+	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	apibase.ApiResult(w, r, *resultInfo)
+}
+
+// / / Get godoc
+// @Summary Get a user
+// @Description Get a user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path uint true "User ID"
+// @Success 200 {object} UserResponse
+// @Failure 400 {object} UserResponse
+// @Failure 500 {object} UserResponse
+// @Router /users/{id} [get]
+func Get(w http.ResponseWriter, r *http.Request) {
+	response := UserResponse{}
+	strId := r.URL.Query().Get("id")
+	id, err := util.ToUint(strId)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	userStore := users.NewUserStore()
+	res, err := userStore.GetUser(id)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	response.User = UserDto{
+		ID:        res.ID,
+		Email:     res.Email,
+		Gsm:       res.Gsm,
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+	}
+	response.Status = common.ApiStatusSuccess
+	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	apibase.ApiResult(w, r, *resultInfo)
+}
+
+// / Update godoc
+// @Summary Update a user
+// @Description Update a user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path uint true "User ID"
+// @Param user body UserUpdateRequest true "User"
+// @Success 200 {object} UserUpdateResponse
+// @Failure 400 {object} UserUpdateResponse
+// @Failure 500 {object} UserUpdateResponse
+// @Router /users/{id} [put]
+func Update(w http.ResponseWriter, r *http.Request) {
+	var user UserUpdateRequest
+	response := UserUpdateResponse{}
+	strId := r.URL.Query().Get("id")
+	id, err := util.ToUint(strId)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	err = json.NewDecoder(r.Body).Decode(&user)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	userStore := users.NewUserStore()
+	res, _ := userStore.GetUser(id)
+
+	res.Email = user.Email
+	res.Gsm = user.Gsm
+	res.FirstName = user.FirstName
+	res.LastName = user.LastName
+
+	res, err = userStore.UpdateUser(res)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	response.User = UserDto{
+		ID:        res.ID,
+		Email:     res.Email,
+		Gsm:       res.Gsm,
+		FirstName: res.FirstName,
+		LastName:  res.LastName,
+	}
+	response.Status = common.ApiStatusSuccess
+	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	apibase.ApiResult(w, r, *resultInfo)
+}
+
+// / Delete godoc
+// @Summary Delete a user
+// @Description Delete a user
+// @Tags users
+// @Accept  json
+// @Produce  json
+// @Param id path uint true "User ID"
+// @Success 200 {object} UserDeleteResponse
+// @Failure 400 {object} UserDeleteResponse
+// @Failure 500 {object} UserDeleteResponse
+// @Router /users/{id} [delete]
+func Delete(w http.ResponseWriter, r *http.Request) {
+	response := UserDeleteResponse{}
+	strId := r.URL.Query().Get("id")
+	id, err := util.ToUint(strId)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	userStore := users.NewUserStore()
+	err = userStore.DeleteUser(id)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
 	}
 	response.Status = common.ApiStatusSuccess
 	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)

@@ -1,12 +1,13 @@
 package util
 
-
 import (
-	"github.com/google/uuid"
+	"strconv"
 	"time"
+
+	"github.com/google/uuid"
 )
 
-func GetUUID() string{
+func GetUUID() string {
 	return uuid.New().String()
 }
 
@@ -17,4 +18,12 @@ func ParseDate(date string) time.Time {
 		panic(error)
 	}
 	return res
+}
+
+func ToUint(s string) (uint, error) {
+	res, error := strconv.ParseUint(s, 10, 32)
+	if error != nil {
+		return 0, error
+	}
+	return uint(res), nil
 }

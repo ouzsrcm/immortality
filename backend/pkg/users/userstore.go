@@ -354,3 +354,33 @@ func (s *UserStore) DeleteCredentialsByUserId(userId uint) error {
 	}
 	return nil
 }
+
+func (s *UserStore) UpdateUser(model *User) (*User, error) {
+	var user *User
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Save(&model)
+		if res.Error != nil {
+			return res.Error
+		}
+		user, _ = s.GetUser(model.ID)
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return user, nil
+}
+
+func (s *UserStore) DeleteUser(id uint) error {
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("id = ?", id).Table(USERS).Delete(&User{})
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return txres
+	}
+	return nil
+}
