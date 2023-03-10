@@ -1,3 +1,5 @@
+// path: backend\pkg\restapi\apibase\apibase.go
+
 package apibase
 
 import (

@@ -1,3 +1,5 @@
+// Path: backend\pkg\restapi\controllers\models.go
+
 package restapi
 
 import (
@@ -61,4 +63,33 @@ type UserCreateResponse struct {
 
 	User       UserDto       `json:"user"`
 	Credential CredentialDto `json:"credential"`
+}
+
+// Models for auth.go
+type AuthRequest struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type AuthResponse struct {
+	common.ApiResponse
+
+	UserId       uint   `json:"user_id"`
+	Email        string `json:"email"`
+	Token        string `json:"token"`
+	StatusCode   int    `json:"status_code"`
+	ErrorMessage string `json:"error_message"`
+}
+
+type ExpireTokenRequest struct {
+	Token string `json:"token"`
+}
+
+type ExpireTokenResponse struct {
+	common.ApiResponse
+
+	UserId       uint   `json:"user_id"`
+	Token        string `json:"token"`
+	StatusCode   int    `json:"status_code"`
+	ErrorMessage string `json:"error_message"`
 }

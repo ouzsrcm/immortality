@@ -1,34 +1,14 @@
+// path: backend\pkg\restapi\restapi.go
+
 package restapi
 
 import (
 	"encoding/json"
+	"immortality/pkg/common"
+	"immortality/pkg/restapi/apibase"
 	"immortality/pkg/users"
 	"net/http"
 )
-
-type AuthRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
-}
-
-type AuthResponse struct {
-	UserId       uint   `json:"user_id"`
-	Email        string `json:"email"`
-	Token        string `json:"token"`
-	StatusCode   int    `json:"status_code"`
-	ErrorMessage string `json:"error_message"`
-}
-
-type ExpireTokenRequest struct {
-	Token string `json:"token"`
-}
-
-type ExpireTokenResponse struct {
-	UserId       uint   `json:"user_id"`
-	Token        string `json:"token"`
-	StatusCode   int    `json:"status_code"`
-	ErrorMessage string `json:"error_message"`
-}
 
 // / Register godoc
 // @Summary auth for token
@@ -44,30 +24,39 @@ type ExpireTokenResponse struct {
 // @Router /auth [post]
 func Auth(w http.ResponseWriter, r *http.Request) {
 
+	var response AuthResponse
 	var model AuthRequest
 	var token string
 
-	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&model)
+	json.NewDecoder(r.Body).Decode(&model)
 
 	userStore := users.NewUserStore()
 
 	res, _ := userStore.VerifyCredential(model.Email, model.Password)
-	user, _ := userStore.GetUserByEmail(model.Email)
+	user, err := userStore.GetUserByEmail(model.Email)
 
-	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
 	if res {
 		tokenres, err := userStore.GenerateToken(user)
 		if err != nil {
-			w.WriteHeader(http.StatusOK)
+			response.Status = common.ApiStatusError
 		} else {
-			w.WriteHeader(http.StatusInternalServerError)
+			response.Status = common.ApiStatusSuccess
 		}
 		token = tokenres.Token
 	} else {
-		w.WriteHeader(http.StatusUnauthorized)
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = "Invalid email or password"
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
 	}
-
 	json, _ := json.Marshal(AuthResponse{
 		UserId:       user.ID,
 		Email:        user.Email,
@@ -75,8 +64,9 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 		StatusCode:   http.StatusOK,
 		ErrorMessage: "",
 	})
-
-	w.Write([]byte(json))
+	response.Data = json
+	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	apibase.ApiResult(w, r, *resultInfo)
 }
 
 // / ExpireToken godoc
@@ -92,18 +82,20 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} ExpireTokenResponse "false"
 // @Router /auth/expire_token [post]
 func ExpireToken(w http.ResponseWriter, r *http.Request) {
+
+	var response ExpireTokenResponse
 	var model ExpireTokenRequest
-	decoder := json.NewDecoder(r.Body)
-	decoder.Decode(&model)
+	json.NewDecoder(r.Body).Decode(&model)
 
 	userStore := users.NewUserStore()
 
-	w.Header().Set("Content-Type", "application/json")
-
 	res, err := userStore.ExpireToken(model.Token)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		w.Write([]byte(err.Error()))
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
 	}
 	json, _ := json.Marshal(ExpireTokenResponse{
 		UserId:       res.UserId,
@@ -111,7 +103,8 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 		StatusCode:   http.StatusOK,
 		ErrorMessage: "",
 	})
-
-	w.Write([]byte(json))
-
+	response.Data = json
+	response.Status = common.ApiStatusSuccess
+	resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
+	apibase.ApiResult(w, r, *resultInfo)
 }

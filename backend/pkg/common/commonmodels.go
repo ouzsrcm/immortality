@@ -32,6 +32,7 @@ type CreditCardType struct {
 	Description string `json:"description" example:"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."`
 }
 
+/// restapi.Response
 type ApiResponse struct {
 	Status       string      `json:"status"`
 	ErrorMessage string      `json:"errorMessage"`
