@@ -56,6 +56,47 @@
                 }
             }
         },
+        "/auth/current_tokens": {
+            "get": {
+                "description": "current tokens",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "current tokens",
+                "responses": {
+                    "200": {
+                        "description": "true",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.CurrentTokensResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.CurrentTokensResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.CurrentTokensResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.CurrentTokensResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/expire_token": {
             "post": {
                 "description": "expire token",
@@ -103,6 +144,58 @@
                         "description": "false",
                         "schema": {
                             "$ref": "#/definitions/restapi.ExpireTokenResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/token_exists": {
+            "post": {
+                "description": "token exists",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "token exists",
+                "parameters": [
+                    {
+                        "description": "request",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/restapi.TokenExistsRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "true",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.TokenExistsResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.TokenExistsResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.TokenExistsResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.TokenExistsResponse"
                         }
                     }
                 }
@@ -364,6 +457,24 @@
                 }
             }
         },
+        "restapi.CurrentTokensResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "errorMessage": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "tokens": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "integer"
+                    }
+                }
+            }
+        },
         "restapi.ExpireTokenRequest": {
             "type": "object",
             "properties": {
@@ -393,6 +504,29 @@
                 },
                 "user_id": {
                     "type": "integer"
+                }
+            }
+        },
+        "restapi.TokenExistsRequest": {
+            "type": "object",
+            "properties": {
+                "token": {
+                    "type": "string"
+                }
+            }
+        },
+        "restapi.TokenExistsResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "errorMessage": {
+                    "type": "string"
+                },
+                "exists": {
+                    "type": "boolean"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },

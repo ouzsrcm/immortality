@@ -384,3 +384,15 @@ func (s *UserStore) DeleteUser(id uint) error {
 	}
 	return nil
 }
+
+func (s *UserStore) TokenExists(token string) (bool, error) {
+	var tokenModel *UserToken
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("token = ?", token).Table("user_tokens").First(&tokenModel)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	return (txres != nil), nil
+}

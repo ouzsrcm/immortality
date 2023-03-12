@@ -93,3 +93,18 @@ type ExpireTokenResponse struct {
 	StatusCode   int    `json:"status_code"`
 	ErrorMessage string `json:"error_message"`
 }
+
+type TokenExistsRequest struct {
+	Token string `json:"token"`
+}
+
+type TokenExistsResponse struct {
+	common.ApiResponse
+	Exists bool `json:"exists"`
+}
+
+type CurrentTokensResponse struct {
+	common.ApiResponse
+
+	Tokens map[string]uint `json:"tokens"`
+}

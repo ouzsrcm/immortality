@@ -124,3 +124,87 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 
 	apibase.ApiResult(w, r, resultInfo)
 }
+
+// / TokenExists godoc
+// @Summary token exists
+// @Description token exists
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Param request body TokenExistsRequest true "request"
+// @Success 200 {object} TokenExistsResponse "true"
+// @Failure 401 {object} TokenExistsResponse "false"
+// @Failure 404 {object} TokenExistsResponse "false"
+// @Failure 500 {object} TokenExistsResponse "false"
+// @Router /auth/token_exists [post]
+func TokenExists(w http.ResponseWriter, r *http.Request) {
+	var response TokenExistsResponse
+	var model TokenExistsRequest
+	json.NewDecoder(r.Body).Decode(&model)
+
+	userStore := users.NewUserStore()
+
+	res, err := userStore.TokenExists(model.Token)
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	json, _ := json.Marshal(TokenExistsResponse{
+		Exists: res,
+	})
+	response.Data = json
+	response.Status = common.ApiStatusSuccess
+
+	var resultInfo apibase.ResultInfo
+	resultInfo.ContentType = "application/json"
+	resultInfo.StatusCode = http.StatusOK
+	resultInfo.Data = response
+
+	apibase.ApiResult(w, r, resultInfo)
+}
+
+// / CurrentTokens godoc
+// @Summary current tokens
+// @Description current tokens
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} CurrentTokensResponse "true"
+// @Failure 401 {object} CurrentTokensResponse "false"
+// @Failure 404 {object} CurrentTokensResponse "false"
+// @Failure 500 {object} CurrentTokensResponse "false"
+// @Router /auth/current_tokens [get]
+func CurrentTokens(w http.ResponseWriter, r *http.Request) {
+
+	var response CurrentTokensResponse
+
+	userStore := users.NewUserStore()
+
+	res, err := userStore.GetTokens()
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	tokens := make(map[string]uint)
+	for _, token := range res {
+		tokens[token.Token] = token.UserId
+	}
+	json, _ := json.Marshal(CurrentTokensResponse{
+		Tokens: tokens,
+	})
+	response.Data = json
+	response.Status = common.ApiStatusSuccess
+
+	var resultInfo apibase.ResultInfo
+	resultInfo.ContentType = "application/json"
+	resultInfo.StatusCode = http.StatusOK
+	resultInfo.Data = response
+
+	apibase.ApiResult(w, r, resultInfo)
+}

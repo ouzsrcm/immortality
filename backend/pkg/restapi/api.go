@@ -4,9 +4,17 @@ import (
 	"fmt"
 	"immortality/pkg/restapi/middleware"
 	"immortality/pkg/restapi/routes"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
+)
+
+const (
+	PORT    = "8080"
+	HOST    = "localhost"
+	VERSION = "v1"
 )
 
 func Initialize() {
@@ -18,8 +26,14 @@ func Initialize() {
 	amw.Init()
 	r.Use(amw.Middleware)
 
-	routes.Routes(r)
+	routes.Routes(r, VERSION)
 
-	// port'u config'e taşı
-	http.ListenAndServe(":8080", r)
+	srv := &http.Server{
+		Handler:      r,
+		Addr:         fmt.Sprintf("%s:%s", HOST, PORT),
+		WriteTimeout: 15 * time.Second,
+		ReadTimeout:  15 * time.Second,
+	}
+
+	log.Fatal(srv.ListenAndServe())
 }

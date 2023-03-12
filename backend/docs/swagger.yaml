@@ -24,6 +24,18 @@ definitions:
       user_id:
         type: integer
     type: object
+  restapi.CurrentTokensResponse:
+    properties:
+      data: {}
+      errorMessage:
+        type: string
+      status:
+        type: string
+      tokens:
+        additionalProperties:
+          type: integer
+        type: object
+    type: object
   restapi.ExpireTokenRequest:
     properties:
       token:
@@ -44,6 +56,21 @@ definitions:
         type: string
       user_id:
         type: integer
+    type: object
+  restapi.TokenExistsRequest:
+    properties:
+      token:
+        type: string
+    type: object
+  restapi.TokenExistsResponse:
+    properties:
+      data: {}
+      errorMessage:
+        type: string
+      exists:
+        type: boolean
+      status:
+        type: string
     type: object
   restapi.UserCreateRequest:
     properties:
@@ -176,6 +203,33 @@ paths:
       summary: auth for token
       tags:
       - auth
+  /auth/current_tokens:
+    get:
+      consumes:
+      - application/json
+      description: current tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "true"
+          schema:
+            $ref: '#/definitions/restapi.CurrentTokensResponse'
+        "401":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.CurrentTokensResponse'
+        "404":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.CurrentTokensResponse'
+        "500":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.CurrentTokensResponse'
+      summary: current tokens
+      tags:
+      - auth
   /auth/expire_token:
     post:
       consumes:
@@ -208,6 +262,40 @@ paths:
           schema:
             $ref: '#/definitions/restapi.ExpireTokenResponse'
       summary: expire token
+      tags:
+      - auth
+  /auth/token_exists:
+    post:
+      consumes:
+      - application/json
+      description: token exists
+      parameters:
+      - description: request
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/restapi.TokenExistsRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "true"
+          schema:
+            $ref: '#/definitions/restapi.TokenExistsResponse'
+        "401":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.TokenExistsResponse'
+        "404":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.TokenExistsResponse'
+        "500":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.TokenExistsResponse'
+      summary: token exists
       tags:
       - auth
   /users:
