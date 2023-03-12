@@ -73,12 +73,11 @@ type AuthRequest struct {
 
 type AuthResponse struct {
 	common.ApiResponse
+}
 
-	UserId       uint   `json:"user_id"`
-	Email        string `json:"email"`
-	Token        string `json:"token"`
-	StatusCode   int    `json:"status_code"`
-	ErrorMessage string `json:"error_message"`
+type AuthResponseData struct {
+	UserId uint   `json:"user_id"`
+	Token  string `json:"token"`
 }
 
 type ExpireTokenRequest struct {

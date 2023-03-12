@@ -63,15 +63,10 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
-	json, _ := json.Marshal(AuthResponse{
-		UserId:       user.ID,
-		Email:        user.Email,
-		Token:        token,
-		StatusCode:   http.StatusOK,
-		ErrorMessage: "",
-	})
-	response.Data = json
-
+	response.Data = AuthResponseData{
+		Token:  token,
+		UserId: user.ID,
+	}
 	var resultInfo apibase.ResultInfo
 	resultInfo.ContentType = "application/json"
 	resultInfo.StatusCode = http.StatusOK

@@ -9,20 +9,10 @@ definitions:
   restapi.AuthResponse:
     properties:
       data: {}
-      email:
-        type: string
-      error_message:
-        type: string
       errorMessage:
         type: string
       status:
         type: string
-      status_code:
-        type: integer
-      token:
-        type: string
-      user_id:
-        type: integer
     type: object
   restapi.CurrentTokensResponse:
     properties:
