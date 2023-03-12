@@ -22,7 +22,7 @@ func (m *AuthMiddleWare) Init() {
 	for _, token := range tokens {
 		m.tokens[token.Token] = token.ID
 	}
-	log.Print("tokens", m.tokens)
+	// log.Print("tokens", m.tokens)
 }
 
 func (m *AuthMiddleWare) Middleware(next http.Handler) http.Handler {

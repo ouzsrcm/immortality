@@ -36,6 +36,14 @@ definitions:
           type: integer
         type: object
     type: object
+  restapi.ExpireAllTokensResponse:
+    properties:
+      data: {}
+      errorMessage:
+        type: string
+      status:
+        type: string
+    type: object
   restapi.ExpireTokenRequest:
     properties:
       token:
@@ -228,6 +236,33 @@ paths:
           schema:
             $ref: '#/definitions/restapi.CurrentTokensResponse'
       summary: current tokens
+      tags:
+      - auth
+  /auth/expire_all_tokens:
+    get:
+      consumes:
+      - application/json
+      description: expire all tokens
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: "true"
+          schema:
+            $ref: '#/definitions/restapi.ExpireAllTokensResponse'
+        "401":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.ExpireAllTokensResponse'
+        "404":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.ExpireAllTokensResponse'
+        "500":
+          description: "false"
+          schema:
+            $ref: '#/definitions/restapi.ExpireAllTokensResponse'
+      summary: expire all tokens
       tags:
       - auth
   /auth/expire_token:

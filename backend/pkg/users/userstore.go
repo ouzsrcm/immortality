@@ -396,3 +396,25 @@ func (s *UserStore) TokenExists(token string) (bool, error) {
 	})
 	return (txres != nil), nil
 }
+
+func (s *UserStore) ExpireAllTokens() (bool, error) {
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res, err := s.GetTokens()
+		if err != nil {
+			return err
+		}
+		for _, token := range res {
+			token.ExpirationDate = time.Now()
+			token.IsActive = false
+			res := tx.Save(&token)
+			if res.Error != nil {
+				return res.Error
+			}
+		}
+		return nil
+	})
+	if txres != nil {
+		return false, txres
+	}
+	return true, nil
+}

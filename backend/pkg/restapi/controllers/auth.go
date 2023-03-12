@@ -195,10 +195,9 @@ func CurrentTokens(w http.ResponseWriter, r *http.Request) {
 	for _, token := range res {
 		tokens[token.Token] = token.UserId
 	}
-	json, _ := json.Marshal(CurrentTokensResponse{
+	response.Data = &CurrentTokensResponse{
 		Tokens: tokens,
-	})
-	response.Data = json
+	}
 	response.Status = common.ApiStatusSuccess
 
 	var resultInfo apibase.ResultInfo
@@ -206,5 +205,43 @@ func CurrentTokens(w http.ResponseWriter, r *http.Request) {
 	resultInfo.StatusCode = http.StatusOK
 	resultInfo.Data = response
 
+	apibase.ApiResult(w, r, resultInfo)
+}
+
+// / ExpireAllTokens godoc
+// @Summary expire all tokens
+// @Description expire all tokens
+// @Tags auth
+// @Accept json
+// @Produce json
+// @Success 200 {object} ExpireAllTokensResponse "true"
+// @Failure 401 {object} ExpireAllTokensResponse "false"
+// @Failure 404 {object} ExpireAllTokensResponse "false"
+// @Failure 500 {object} ExpireAllTokensResponse "false"
+// @Router /auth/expire_all_tokens [get]
+func ExpireAllTokens(w http.ResponseWriter, r *http.Request) {
+
+	var response ExpireAllTokensResponse
+
+	userStore := users.NewUserStore()
+
+	res, err := userStore.ExpireAllTokens()
+	if err != nil {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = err.Error()
+		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
+		apibase.ApiResult(w, r, *resultInfo)
+		return
+	}
+	response.Data = ExpireAllTokensResponse{}
+	if res == true {
+		response.Status = common.ApiStatusSuccess
+	} else {
+		response.Status = common.ApiStatusError
+	}
+	var resultInfo apibase.ResultInfo
+	resultInfo.ContentType = "application/json"
+	resultInfo.StatusCode = http.StatusOK
+	resultInfo.Data = response
 	apibase.ApiResult(w, r, resultInfo)
 }

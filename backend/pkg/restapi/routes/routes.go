@@ -36,5 +36,6 @@ func Routes(r *mux.Router, v string) {
 	authRoute.HandleFunc("/expire_token", restapi.ExpireToken).Methods("POST")
 	authRoute.HandleFunc("/token_exists", restapi.TokenExists).Methods("POST")
 	authRoute.HandleFunc("/current_tokens", restapi.CurrentTokens).Methods("GET")
+	authRoute.HandleFunc("/expire_all_tokens", restapi.ExpireAllTokens).Methods("GET")
 
 }

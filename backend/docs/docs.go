@@ -108,6 +108,47 @@ const docTemplate = `{
                 }
             }
         },
+        "/auth/expire_all_tokens": {
+            "get": {
+                "description": "expire all tokens",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "auth"
+                ],
+                "summary": "expire all tokens",
+                "responses": {
+                    "200": {
+                        "description": "true",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireAllTokensResponse"
+                        }
+                    },
+                    "401": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireAllTokensResponse"
+                        }
+                    },
+                    "404": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireAllTokensResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "false",
+                        "schema": {
+                            "$ref": "#/definitions/restapi.ExpireAllTokensResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/auth/expire_token": {
             "post": {
                 "description": "expire token",
@@ -483,6 +524,18 @@ const docTemplate = `{
                     "additionalProperties": {
                         "type": "integer"
                     }
+                }
+            }
+        },
+        "restapi.ExpireAllTokensResponse": {
+            "type": "object",
+            "properties": {
+                "data": {},
+                "errorMessage": {
+                    "type": "string"
+                },
+                "status": {
+                    "type": "string"
                 }
             }
         },
