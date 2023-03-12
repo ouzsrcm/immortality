@@ -518,12 +518,6 @@ const docTemplate = `{
                 },
                 "status": {
                     "type": "string"
-                },
-                "tokens": {
-                    "type": "object",
-                    "additionalProperties": {
-                        "type": "integer"
-                    }
                 }
             }
         },
@@ -554,20 +548,8 @@ const docTemplate = `{
                 "errorMessage": {
                     "type": "string"
                 },
-                "error_message": {
-                    "type": "string"
-                },
                 "status": {
                     "type": "string"
-                },
-                "status_code": {
-                    "type": "integer"
-                },
-                "token": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "integer"
                 }
             }
         },

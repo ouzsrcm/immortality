@@ -31,10 +31,6 @@ definitions:
         type: string
       status:
         type: string
-      tokens:
-        additionalProperties:
-          type: integer
-        type: object
     type: object
   restapi.ExpireAllTokensResponse:
     properties:
@@ -52,18 +48,10 @@ definitions:
   restapi.ExpireTokenResponse:
     properties:
       data: {}
-      error_message:
-        type: string
       errorMessage:
         type: string
       status:
         type: string
-      status_code:
-        type: integer
-      token:
-        type: string
-      user_id:
-        type: integer
     type: object
   restapi.TokenExistsRequest:
     properties:

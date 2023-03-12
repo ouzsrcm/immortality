@@ -388,7 +388,7 @@ func (s *UserStore) DeleteUser(id uint) error {
 func (s *UserStore) TokenExists(token string) (bool, error) {
 	var exists bool
 	txres := s.Db.Transaction(func(tx *gorm.DB) error {
-		res := tx.Model(&UserToken{}).Select("count(*) > 0").Where("token = ?", token).Find(&exists)
+		res := tx.Model(&UserToken{}).Select("count(*) > 0").Where("token = ?", token).Where("is_active", 1).Find(&exists)
 		if res.Error != nil {
 			return res.Error
 		}

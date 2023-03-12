@@ -108,20 +108,17 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
-	json, _ := json.Marshal(ExpireTokenResponse{
-		UserId:       res.UserId,
-		Token:        res.Token,
-		StatusCode:   http.StatusOK,
-		ErrorMessage: "",
-	})
-	response.Data = json
-	response.Status = common.ApiStatusSuccess
-
+	if res != nil {
+		response.Status = common.ApiStatusSuccess
+		response.ErrorMessage = "Token Expired"
+	} else {
+		response.Status = common.ApiStatusError
+		response.ErrorMessage = "Token not found"
+	}
 	var resultInfo apibase.ResultInfo
 	resultInfo.ContentType = "application/json"
 	resultInfo.StatusCode = http.StatusOK
 	resultInfo.Data = response
-
 	apibase.ApiResult(w, r, resultInfo)
 }
 
