@@ -386,15 +386,18 @@ func (s *UserStore) DeleteUser(id uint) error {
 }
 
 func (s *UserStore) TokenExists(token string) (bool, error) {
-	var tokenModel *UserToken
+	var exists bool
 	txres := s.Db.Transaction(func(tx *gorm.DB) error {
-		res := tx.Where("token = ?", token).Table("user_tokens").First(&tokenModel)
+		res := tx.Model(&UserToken{}).Select("count(*) > 0").Where("token = ?", token).Find(&exists)
 		if res.Error != nil {
 			return res.Error
 		}
 		return nil
 	})
-	return (txres != nil), nil
+	if txres != nil {
+		return false, txres
+	}
+	return exists, nil
 }
 
 func (s *UserStore) ExpireAllTokens() (bool, error) {

@@ -152,10 +152,7 @@ func TokenExists(w http.ResponseWriter, r *http.Request) {
 		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
-	json, _ := json.Marshal(TokenExistsResponse{
-		Exists: res,
-	})
-	response.Data = json
+	response.Exists = res
 	response.Status = common.ApiStatusSuccess
 
 	var resultInfo apibase.ResultInfo
@@ -178,11 +175,8 @@ func TokenExists(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} CurrentTokensResponse "false"
 // @Router /auth/current_tokens [get]
 func CurrentTokens(w http.ResponseWriter, r *http.Request) {
-
 	var response CurrentTokensResponse
-
 	userStore := users.NewUserStore()
-
 	res, err := userStore.GetTokens()
 	if err != nil {
 		response.Status = common.ApiStatusError
@@ -195,16 +189,12 @@ func CurrentTokens(w http.ResponseWriter, r *http.Request) {
 	for _, token := range res {
 		tokens[token.Token] = token.UserId
 	}
-	response.Data = &CurrentTokensResponse{
-		Tokens: tokens,
-	}
+	response.Data = tokens
 	response.Status = common.ApiStatusSuccess
-
 	var resultInfo apibase.ResultInfo
 	resultInfo.ContentType = "application/json"
 	resultInfo.StatusCode = http.StatusOK
 	resultInfo.Data = response
-
 	apibase.ApiResult(w, r, resultInfo)
 }
 
@@ -220,28 +210,22 @@ func CurrentTokens(w http.ResponseWriter, r *http.Request) {
 // @Failure 500 {object} ExpireAllTokensResponse "false"
 // @Router /auth/expire_all_tokens [get]
 func ExpireAllTokens(w http.ResponseWriter, r *http.Request) {
-
-	var response ExpireAllTokensResponse
-
 	userStore := users.NewUserStore()
-
 	res, err := userStore.ExpireAllTokens()
 	if err != nil {
+		response := &ExpireAllTokensResponse{}
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
 		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
 		apibase.ApiResult(w, r, *resultInfo)
 		return
 	}
-	response.Data = ExpireAllTokensResponse{}
-	if res == true {
-		response.Status = common.ApiStatusSuccess
-	} else {
-		response.Status = common.ApiStatusError
-	}
 	var resultInfo apibase.ResultInfo
 	resultInfo.ContentType = "application/json"
-	resultInfo.StatusCode = http.StatusOK
-	resultInfo.Data = response
+	if res {
+		resultInfo.StatusCode = http.StatusOK
+	} else {
+		resultInfo.StatusCode = http.StatusBadRequest
+	}
 	apibase.ApiResult(w, r, resultInfo)
 }

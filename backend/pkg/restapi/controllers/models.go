@@ -105,8 +105,6 @@ type TokenExistsResponse struct {
 
 type CurrentTokensResponse struct {
 	common.ApiResponse
-
-	Tokens map[string]uint `json:"tokens"`
 }
 
 type ExpireAllTokensResponse struct {
