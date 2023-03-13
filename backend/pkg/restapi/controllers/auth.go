@@ -1,5 +1,7 @@
 // path: backend\pkg\restapi\restapi.go
 
+//TODO: redis kullanılacak
+
 package restapi
 
 import (
