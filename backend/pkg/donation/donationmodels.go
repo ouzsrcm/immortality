@@ -25,6 +25,8 @@ type Donation struct {
 	Description      string `json:"description" example:"Donation Description"`             // Donation description
 	ShortDescription string `json:"short_description" example:"Donation Short Description"` // Donation short description
 	Ordering         int    `json:"ordering"`                                               // Ordering
+
+	DonationAmounts []DonationAmount `json:"donation_amounts"` // Donation amounts
 }
 
 // / DonationAmount is a donation amount

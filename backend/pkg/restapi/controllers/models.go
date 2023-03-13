@@ -1,5 +1,3 @@
-// Path: backend\pkg\restapi\controllers\models.go
-
 package restapi
 
 import (
@@ -133,4 +131,21 @@ type CurrentTokensResponse struct {
 // / Request for all tokens
 type ExpireAllTokensResponse struct {
 	common.ApiResponse
+}
+
+// Models for donation.go
+type DonationDto struct {
+	ID               uint   `json:"donationId" example:"1"`
+	GroupID          uint   `json:"groupId" example:"1"`
+	Name             string `json:"name" example:"John Doe"`
+	Description      string `json:"description" example:"John Doe"`
+	ShortDescription string `json:"shortDescription" example:"John Doe"`
+}
+
+// / Donation amounts
+type DonationAmountDto struct {
+	ID             uint    `json:"id" example:"1"`
+	DonationID     uint    `json:"donationId" example:"1"`
+	Amount         float64 `json:"amount" example:"1"`
+	CampaignAmount float64 `json:"campaignAmount" example:"1"`
 }

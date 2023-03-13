@@ -13,6 +13,7 @@ import (
 const USERS = "users"
 const CREDENTIALS = "credentials"
 const CREDENTIALCHANGES = "credentialchanges"
+const USERTOKENS = "user_tokens"
 
 type UserStore struct {
 	common.StoreBase
