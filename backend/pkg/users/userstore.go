@@ -194,6 +194,21 @@ func (s *UserStore) GenerateToken(model *User) (*UserToken, error) {
 	return tokenModel, nil
 }
 
+func (s *UserStore) GetToken(token string) (*UserToken, error) {
+	var tokenModel *UserToken
+	txres := s.Db.Transaction(func(tx *gorm.DB) error {
+		res := tx.Where("token = ?", token).Where("is_active = ?", 1).Table("user_tokens").First(&tokenModel)
+		if res.Error != nil {
+			return res.Error
+		}
+		return nil
+	})
+	if txres != nil {
+		return nil, txres
+	}
+	return tokenModel, nil
+}
+
 func (s *UserStore) GetTokens() ([]*UserToken, error) {
 	var tokens []*UserToken
 	txres := s.Db.Transaction(func(tx *gorm.DB) error {

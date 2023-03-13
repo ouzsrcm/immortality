@@ -34,8 +34,11 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	for _, user := range res {
@@ -48,9 +51,11 @@ func UserList(w http.ResponseWriter, r *http.Request) {
 		})
 	}
 	response.Users = users
-	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
-	apibase.ApiResult(w, r, *resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		StatusCode:  http.StatusOK,
+		ContentType: "application/json",
+		Data:        response,
+	})
 }
 
 // / Create godoc
@@ -76,25 +81,29 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
-
 	user.Email = request.Email
 	user.Gsm = request.Gsm
 	user.FirstName = request.FirstName
 	user.LastName = request.LastName
 
 	userStore := users.NewUserStore()
-
 	res, err := userStore.CreateUser(&user)
 
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 
@@ -108,11 +117,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		var resultInfo apibase.ResultInfo
-		resultInfo.ContentType = "application/json"
-		resultInfo.StatusCode = http.StatusBadRequest
-		resultInfo.Data = response
-		apibase.ApiResult(w, r, resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 
@@ -131,8 +140,11 @@ func Create(w http.ResponseWriter, r *http.Request) {
 		LastName:  res.LastName,
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
-	apibase.ApiResult(w, r, *resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		StatusCode:  http.StatusOK,
+		ContentType: "application/json",
+		Data:        response,
+	})
 }
 
 // / / Get godoc
@@ -153,8 +165,11 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	userStore := users.NewUserStore()
@@ -162,8 +177,11 @@ func Get(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	response.User = UserDto{
@@ -174,8 +192,11 @@ func Get(w http.ResponseWriter, r *http.Request) {
 		LastName:  res.LastName,
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
-	apibase.ApiResult(w, r, *resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		StatusCode:  http.StatusOK,
+		ContentType: "application/json",
+		Data:        response,
+	})
 }
 
 // / Update godoc
@@ -198,16 +219,22 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	err = json.NewDecoder(r.Body).Decode(&user)
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	userStore := users.NewUserStore()
@@ -222,8 +249,10 @@ func Update(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+		})
 		return
 	}
 	response.User = UserDto{
@@ -234,8 +263,11 @@ func Update(w http.ResponseWriter, r *http.Request) {
 		LastName:  res.LastName,
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
-	apibase.ApiResult(w, r, *resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		StatusCode:  http.StatusOK,
+		ContentType: "application/json",
+		Data:        response,
+	})
 }
 
 // / Delete godoc
@@ -256,8 +288,11 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	userStore := users.NewUserStore()
@@ -265,11 +300,17 @@ func Delete(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusBadRequest, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	response.Status = common.ApiStatusSuccess
-	resultInfo := apibase.NewResultInfo(http.StatusOK, err.Error(), "application/json", response)
-	apibase.ApiResult(w, r, *resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		StatusCode:  http.StatusOK,
+		ContentType: "application/json",
+		Data:        response,
+	})
 }

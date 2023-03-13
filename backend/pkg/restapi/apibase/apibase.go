@@ -63,6 +63,9 @@ func ApiResultError(w http.ResponseWriter, _ *http.Request, i ResultInfo) (bool,
 	w.Header().Set("Content-Type", i.ContentType)
 	w.WriteHeader(i.StatusCode)
 
+	json, _ := json.Marshal(i.Data)
+	w.Write([]byte(json))
+
 	return true, nil
 }
 

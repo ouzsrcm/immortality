@@ -36,16 +36,22 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusNotFound,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	user, err := userStore.GetUserByEmail(model.Email)
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusNotFound,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	if res {
@@ -59,20 +65,22 @@ func Auth(w http.ResponseWriter, r *http.Request) {
 	} else {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = "Invalid email or password"
-		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			StatusCode:  http.StatusBadRequest,
+			ContentType: "application/json",
+			Data:        response,
+		})
 		return
 	}
 	response.Data = AuthResponseData{
 		Token:  token,
 		UserId: user.ID,
 	}
-	var resultInfo apibase.ResultInfo
-	resultInfo.ContentType = "application/json"
-	resultInfo.StatusCode = http.StatusOK
-	resultInfo.Data = response
-
-	apibase.ApiResult(w, r, resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		StatusCode:  http.StatusOK,
+		ContentType: "application/json",
+		Data:        response,
+	})
 }
 
 // / ExpireToken godoc
@@ -99,8 +107,11 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			ContentType: "application/json",
+			StatusCode:  http.StatusNotFound,
+			Data:        response,
+		})
 		return
 	}
 	if res != nil {
@@ -110,11 +121,11 @@ func ExpireToken(w http.ResponseWriter, r *http.Request) {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = "Token not found"
 	}
-	var resultInfo apibase.ResultInfo
-	resultInfo.ContentType = "application/json"
-	resultInfo.StatusCode = http.StatusOK
-	resultInfo.Data = response
-	apibase.ApiResult(w, r, resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		ContentType: "application/json",
+		StatusCode:  http.StatusOK,
+		Data:        response,
+	})
 }
 
 // / TokenExists godoc
@@ -146,13 +157,11 @@ func TokenExists(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Exists = res
 	response.Status = common.ApiStatusSuccess
-
-	var resultInfo apibase.ResultInfo
-	resultInfo.ContentType = "application/json"
-	resultInfo.StatusCode = http.StatusOK
-	resultInfo.Data = response
-
-	apibase.ApiResult(w, r, resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		ContentType: "application/json",
+		StatusCode:  http.StatusOK,
+		Data:        response,
+	})
 }
 
 // / CurrentTokens godoc
@@ -173,8 +182,11 @@ func CurrentTokens(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response.Status = common.ApiStatusError
 		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			ContentType: "application/json",
+			StatusCode:  http.StatusNotFound,
+			Data:        response,
+		})
 		return
 	}
 	tokens := make(map[string]uint)
@@ -183,11 +195,11 @@ func CurrentTokens(w http.ResponseWriter, r *http.Request) {
 	}
 	response.Data = tokens
 	response.Status = common.ApiStatusSuccess
-	var resultInfo apibase.ResultInfo
-	resultInfo.ContentType = "application/json"
-	resultInfo.StatusCode = http.StatusOK
-	resultInfo.Data = response
-	apibase.ApiResult(w, r, resultInfo)
+	apibase.ApiResult(w, r, apibase.ResultInfo{
+		ContentType: "application/json",
+		StatusCode:  http.StatusOK,
+		Data:        response,
+	})
 }
 
 // / ExpireAllTokens godoc
@@ -207,9 +219,11 @@ func ExpireAllTokens(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		response := &ExpireAllTokensResponse{}
 		response.Status = common.ApiStatusError
-		response.ErrorMessage = err.Error()
-		resultInfo := apibase.NewResultInfo(http.StatusNotFound, err.Error(), "application/json", response)
-		apibase.ApiResult(w, r, *resultInfo)
+		apibase.ApiResult(w, r, apibase.ResultInfo{
+			ContentType: "application/json",
+			StatusCode:  http.StatusNotFound,
+			Data:        response,
+		})
 		return
 	}
 	var resultInfo apibase.ResultInfo
